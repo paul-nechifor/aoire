@@ -1,0 +1,30 @@
+{
+  "name": "aoire",
+  "version": "0.0.0",
+  "description": "A server for playing games with bots.",
+  "main": "src",
+  "scripts": {
+    "test": "false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paul-nechifor/aoire.git"
+  },
+  "keywords": [
+    "bot",
+    "game",
+    "websockets"
+  ],
+  "author": "Paul Nechifor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paul-nechifor/aoire/issues"
+  },
+  "homepage": "https://github.com/paul-nechifor/aoire#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "express-ws": "^3.0.0",
+    "underscore": "^1.8.3",
+    "uuid": "^3.0.1"
+  }
+}

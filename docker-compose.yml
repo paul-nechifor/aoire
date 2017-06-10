@@ -1,0 +1,14 @@
+aoire:
+  build: .
+  command: ["nodemon", "/app/src/index.js"]
+  ports:
+    - 3000:3000
+  volumes:
+    - ./src:/app/src
+
+nginx:
+  build: ./nginx
+  links:
+    - aoire:aoire
+  ports:
+      - 80:80

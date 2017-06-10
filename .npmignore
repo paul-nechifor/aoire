@@ -1,0 +1,6 @@
+*.env
+*.tgz
+.npmignore
+Dockerfile
+docker-compose.yml
+nginx
