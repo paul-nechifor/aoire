@@ -39,7 +39,6 @@ module.exports = class Server {
   findGameRoom(conn, msg) {
     let referee = this.roomReferees[msg.room];
     if (!referee) {
-      console.log('no such room "%s"', msg.room);
       const Referee = require(`./${msg.gameType}Referee`);
       referee = new Referee(msg.room);
       this.roomReferees[msg.room] = referee;
