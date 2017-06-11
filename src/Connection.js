@@ -7,6 +7,7 @@ module.exports = class Connection {
     this.server = server;
     this.ws = ws;
     this.res = res;
+    this.player = null;
     _.bindAll(this, 'handleMessage', 'handleError', 'handleClose');
   }
 
@@ -22,18 +23,22 @@ module.exports = class Connection {
 
   handleMessage(data) {
     const msg = JSON.parse(data);
-    console.log('msg', msg);
-    this.send({type: 'reply', got: msg});
+    console.log('handleMessage', msg);
+    if (msg.type === 'StartGame') {
+      this.server.findGameRoom(this, msg);
+    } else {
+      this.player[`handleMsg${msg.type}`](msg);
+    }
   }
 
   handleError() {
-    console.log('error');
+    console.log('handleError');
     this.ws.close();
     this.leave();
   }
 
   handleClose() {
-    console.log('close');
+    console.log('handleClose');
   }
 
   leave() {

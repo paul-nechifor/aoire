@@ -7,6 +7,7 @@ module.exports = class Server {
     this.port = port;
     _.bindAll(this, 'handleConnection');
     this.connections = {};
+    this.roomReferees = {};
   }
 
   start() {
@@ -33,5 +34,17 @@ module.exports = class Server {
 
   left(conn) {
     delete this.connections[conn.id];
+  }
+
+  findGameRoom(conn, msg) {
+    let referee = this.roomReferees[msg.room];
+    if (!referee) {
+      console.log('no such room "%s"', msg.room);
+      const Referee = require(`./${msg.gameType}Referee`);
+      referee = new Referee(msg.room);
+      this.roomReferees[msg.room] = referee;
+    }
+    referee.joinGame(conn, msg);
+    return referee;
   }
 };
