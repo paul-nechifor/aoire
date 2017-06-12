@@ -60,13 +60,97 @@ module.exports = class GomokuReferee extends AbstractReferee {
     const end = SIZE - IN_A_ROW;
     let expect, isMatch;
 
+    // This is kinda ugly...
     for (i = 0; i < SIZE; i++) {
       for (j = 0; j < end; j++) {
+        // horiz
         expect = b[i * SIZE + j];
         if (expect !== MOVE_EMPTY) {
           isMatch = true;
           for (k = 1; k < IN_A_ROW; k++) {
             if (b[i * SIZE + j + k] !== expect) {
+              isMatch = false;
+              break;
+            }
+          }
+          if (isMatch) {
+            return expect;
+          }
+        }
+
+        // vert
+        expect = b[j * SIZE + i];
+        if (expect !== MOVE_EMPTY) {
+          isMatch = true;
+          for (k = 1; k < IN_A_ROW; k++) {
+            if (b[(j + k) * SIZE + i] !== expect) {
+              isMatch = false;
+              break;
+            }
+          }
+          if (isMatch) {
+            return expect;
+          }
+        }
+      }
+    }
+
+    for (i = 0; i < end; i++) {
+      for (j = 0; j <= i; j++) {
+        // diag 1 and below
+        expect = b[i * SIZE + j];
+        if (expect !== MOVE_EMPTY) {
+          isMatch = true;
+          for (k = 1; k < IN_A_ROW; k++) {
+            if (b[(k + i) * SIZE + j + k] !== expect) {
+              isMatch = false;
+              break;
+            }
+          }
+          if (isMatch) {
+            return expect;
+          }
+        }
+        // diag 2 and below
+        expect = b[i * SIZE + (SIZE - j - 1)];
+        if (expect !== MOVE_EMPTY) {
+          isMatch = true;
+          for (k = 1; k < IN_A_ROW; k++) {
+            if (b[(k + i) * SIZE + (SIZE - j - 1) - k] !== expect) {
+              isMatch = false;
+              break;
+            }
+          }
+          if (isMatch) {
+            return expect;
+          }
+        }
+      }
+    }
+
+    for (i = 1; i < end; i++) {
+      for (j = 0; j <= i; j++) {
+        // above diag 1
+        expect = b[j * SIZE + i];
+        if (expect !== MOVE_EMPTY) {
+          isMatch = true;
+          for (k = 1; k < IN_A_ROW; k++) {
+            if (b[(k + j) * SIZE + i + k] !== expect) {
+              isMatch = false;
+              break;
+            }
+          }
+          if (isMatch) {
+            return expect;
+          }
+        }
+
+        // above diag 2
+        expect = b[j * SIZE + (SIZE - i - 1)];
+        if (expect !== MOVE_EMPTY) {
+          isMatch = true;
+          for (k = 1; k < IN_A_ROW; k++) {
+            if (b[(k + j) * SIZE + (SIZE - i - 1) - k] !== expect) {
               isMatch = false;
               break;
             }
