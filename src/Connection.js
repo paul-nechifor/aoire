@@ -48,4 +48,8 @@ module.exports = class Connection {
   send(msg) {
     this.ws.send(JSON.stringify(msg))
   }
+
+  close() {
+    this.ws.close();
+  }
 }

@@ -8,4 +8,8 @@ module.exports = class AbstractPlayer {
   send(msg) {
     this.conn.send(msg);
   }
+
+  stop() {
+    this.conn.close();
+  }
 };

@@ -1,5 +1,6 @@
 module.exports = class AbstractReferee {
-  constructor(room) {
+  constructor(server, room) {
+    this.server = server;
     this.room = room;
     this.players = [];
   }
@@ -28,5 +29,12 @@ module.exports = class AbstractReferee {
     this.players.forEach(player => {
       player.send(msg);
     });
+  }
+
+  stopGame() {
+    this.players.forEach(player => {
+      player.stop();
+    });
+    this.server.gameEnded(this);
   }
 };

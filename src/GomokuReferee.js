@@ -47,6 +47,10 @@ module.exports = class GomokuReferee extends AbstractReferee {
 
     this.broadcast({type: 'PlayerMove', playerIndex, move, winner});
     console.log(this.getPrintableBoard());
+
+    if (winner !== MOVE_EMPTY) {
+      this.stopGame();
+    }
   }
 
   checkEnd() {
