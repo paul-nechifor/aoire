@@ -12,11 +12,9 @@ module.exports = class AbstractReferee {
     this.players.push(player);
     conn.player = player;
 
-    this.broadcast({type: 'NumberOfPlayers', number: this.players.length});
     player.send({
       type: 'YouAre',
       index: player.index,
-      id: player.conn.id,
     });
     this.onNewPlayer();
   }

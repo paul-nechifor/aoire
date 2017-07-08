@@ -19,6 +19,68 @@ the message. The message types should be strings in Pascal case (`LikeThis`).
 
 The server doesn’t start games. It waits for players to join.
 
+### Joining a game
+
+Players normally play a fixed number of games in a room, each alternating being
+the first.
+
+A bot connects to ws://hostname/game with something like:
+
+```javascript
+{
+	"type": "StartGame",
+	"room": "someRoomName",
+	"userAgent": "BotName (by Person Name)",
+	"gameType": "Gomoku",
+	"nGames": 5
+}
+```
+
+* `room`: Where you agree to meet with another player.
+* `userAgent`: Used for voluntary identification (please include your name).
+* `gameType`: Only `Gomoku` supported for now.
+* `nGames`: The number of consecutive games you want to play with the other
+  player.
+
+The first player to connect becomes the black player and has index 0. The second
+is white with index 1.
+
+The `nGames` for the second player is ignored.
+
+Since the first player is known to be advantaged, on game 1, black moves first,
+on game 2, white moves first, and so on.
+
+### Knowing who you are
+
+After you send the `StartGame` message, you'll recieve back a message like:
+
+```javascript
+{"type": "YouAre", "index": 0}
+```
+
+* `index`: 0 (black) or 1 (white).
+
+Your index stays the same on subsequent games (but the first to move changes).
+
+### Start of game
+
+You know a game as started when you receive `{"type": "Started"}`. This message
+has no parameters.
+
+If it's your turn you send a message like:
+
+```javascript
+{"type": "Move", "move": 123}
+```
+
+The number represents the cell where you want to place your piece. The order is
+left to right, top to bottom. Cell 0 is the top-left cell. So `move % 15` gives
+you the column and `move / 15` gives you the row.
+
+### Receiving moves
+
+When the server receives the move it sends it back to you and the other player.
+
 ## License
 
 ISC
