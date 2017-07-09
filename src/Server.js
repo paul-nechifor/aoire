@@ -40,7 +40,7 @@ module.exports = class Server {
     let referee = this.roomReferees[msg.room];
     if (!referee) {
       const Referee = require(`./${msg.gameType}Referee`);
-      referee = new Referee(this, msg.room);
+      referee = new Referee(this, msg.room, msg.nGames);
       this.roomReferees[msg.room] = referee;
     }
     referee.joinGame(conn, msg);

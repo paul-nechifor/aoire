@@ -9,10 +9,23 @@ const SIZE = 15;
 const IN_A_ROW = 5;
 const FULL_SIZE = SIZE * SIZE;
 
+// TODO Consider a draw.
+
 module.exports = class GomokuReferee extends AbstractReferee {
-  constructor(...args) {
-    super(...args);
-    this.board = _.range(FULL_SIZE).map(() => MOVE_EMPTY);
+  constructor(server, room, nGames) {
+    super(server, room);
+    this.nGames = nGames;
+    this.gamesPlayed = 0;
+    this.board = null;
+    this.wins = {
+      [MOVE_EMPTY]: 0,
+      [MOVE_BLACK]: 0,
+      [MOVE_WHITE]: 0,
+    };
+    this.currentPlayer = -1;
+    this.maxMoveTime = 5000;
+    this.timeoutHandle = null;
+    this.eventRecords = null;
   }
 
   getPlayerClass() {
@@ -20,8 +33,12 @@ module.exports = class GomokuReferee extends AbstractReferee {
   }
 
   startGame() {
+    this.gamesPlayed++;
+    this.board = _.range(FULL_SIZE).map(() => MOVE_EMPTY);
     this.currentPlayer = 0;
     this.broadcast({type: 'Started'});
+    this.setTimeout();
+    this.eventRecords = [];
   }
 
   onNewPlayer() {
@@ -32,27 +49,64 @@ module.exports = class GomokuReferee extends AbstractReferee {
     }
   }
 
+  setTimeout() {
+    this.timeoutHandle = setTimeout(() => {
+      this.disqualify('timeout');
+    }, this.maxMoveTime);
+  }
+
+  clearTimeout() {
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+    }
+    this.timeoutHandle = null;
+  }
+
   playerMove(playerIndex, move) {
+    this.clearTimeout();
+    this.setTimeout();
     if (playerIndex !== this.currentPlayer) {
-      throw new Error('bad player');
+      this.disqualify('bad player');
     }
     if (this.board[move] !== MOVE_EMPTY) {
-      throw new Error('bad move');
+      this.disqualify('bad move');
     }
     this.board[move] = playerIndex;
+    this.eventRecords.push([Date.now(), move]);
 
     this.currentPlayer = (this.currentPlayer + 1) % 2;
+
+    console.log(this.getPrintableBoard());
 
     const winner = this.checkEnd();
     const msg = {type: 'PlayerMove', playerIndex, move};
     if (winner !== MOVE_EMPTY) {
       msg.winner = winner;
+      console.log('winner', winner);
     }
     this.broadcast(msg);
 
-    console.log(this.getPrintableBoard());
-
     if (winner !== MOVE_EMPTY) {
+      this.wins[winner]++;
+      this.endCurrentGame();
+    }
+  }
+
+  disqualify(msg) {
+    this.eventRecords.push([Date.now(), 'disqualify', msg]);
+    console.log('disqualified');
+    this.endCurrentGame();
+  }
+
+  endCurrentGame() {
+    this.clearTimeout();
+    if (this.gamesPlayed < this.nGames) {
+      this.startGame();
+    } else {
+      console.log({
+        wins: this.wins,
+        nGames: this.nGames,
+      });
       this.stopGame();
     }
   }
