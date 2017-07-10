@@ -23,7 +23,6 @@ module.exports = class Connection {
 
   handleMessage(data) {
     const msg = JSON.parse(data);
-    console.log('handleMessage', msg);
     if (msg.type === 'StartGame') {
       this.server.findGameRoom(this, msg);
     } else {
