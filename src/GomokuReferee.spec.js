@@ -8,6 +8,7 @@ describe('GomokuReferee', () => {
 
   beforeEach(() => {
     referee = new GomokuReferee('room');
+    referee.startGame();
   });
 
   describe('checkEnd', () => {
