@@ -1,6 +1,10 @@
 const Connection = require('./Connection');
 const Db = require('./Db');
 const _ = require('underscore');
+const path = require('path');
+const pug = require('pug');
+
+const viewDir = path.resolve(__dirname, 'views');
 
 module.exports = class Server {
   constructor(app, port, mongoUrl) {
@@ -26,6 +30,13 @@ module.exports = class Server {
     this.app.get('/game', (req, res) => res.end());
     this.app.ws('/game', this.handleConnection);
     this.app.get('/dump', this.getDump);
+    this.app.get('/', this.renderTemplate('index'));
+  }
+
+  renderTemplate(name) {
+    return (req, res) => {
+      res.end(pug.renderFile(path.join(viewDir, name + '.pug'), {}));
+    };
   }
 
   listen() {

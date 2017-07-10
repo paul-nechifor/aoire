@@ -8,8 +8,4 @@ const mongoUrl = process.env.mongo_url || 'mongodb://db:27017/aoire';
 
 expressWs(app);
 
-app.get('/', (req, res) => {
-  res.send('See <a href="https://github.com/paul-nechifor/aoire">github.com/paul-nechifor/aoire</a>.');
-});
-
 new Server(app, port, mongoUrl).start();
