@@ -1,8 +1,9 @@
 module.exports = class AbstractPlayer {
-  constructor(conn, index, referee) {
+  constructor(conn, index, referee, userAgent) {
     this.conn = conn;
     this.index = index;
     this.referee = referee;
+    this.userAgent = userAgent;
   }
 
   send(msg) {

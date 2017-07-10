@@ -1,6 +1,6 @@
-const _ = require('underscore');
 const AbstractReferee = require('./AbstractReferee');
 const GomokuPlayer = require('./GomokuPlayer');
+const _ = require('underscore');
 
 const MOVE_DRAW = -2;
 const MOVE_EMPTY = -1;
@@ -26,6 +26,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
     this.maxMoveTime = 5000;
     this.timeoutHandle = null;
     this.eventRecords = null;
+    this.startTime = Date.now();
   }
 
   getPlayerClass() {
@@ -104,15 +105,17 @@ module.exports = class GomokuReferee extends AbstractReferee {
     if (this.gamesPlayed < this.nGames) {
       this.startGame();
     } else {
-      console.log(JSON.stringify({
+      this.server.db.insertGame({
+        startTime: this.startTime,
         wins: {
           [MOVE_BLACK]: this.wins[MOVE_BLACK],
           [MOVE_WHITE]: this.wins[MOVE_WHITE],
         },
+        players: _.object(this.players.map(x => [x.index, x.userAgent])),
         draws: this.wins[MOVE_WHITE],
         nGames: this.nGames,
         gameEvents: this.gameEvents,
-      }));
+      });
       this.stopGame();
     }
   }

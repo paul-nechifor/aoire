@@ -7,7 +7,7 @@ module.exports = class Server {
     this.app = app;
     this.db = new Db(mongoUrl);
     this.port = port;
-    _.bindAll(this, 'handleConnection');
+    _.bindAll(this, 'handleConnection', 'getDump');
     this.connections = {};
     this.roomReferees = {};
   }
@@ -25,6 +25,7 @@ module.exports = class Server {
   setupListeners() {
     this.app.get('/game', (req, res) => res.end());
     this.app.ws('/game', this.handleConnection);
+    this.app.get('/dump', this.getDump);
   }
 
   listen() {
@@ -56,5 +57,11 @@ module.exports = class Server {
 
   gameEnded(referee) {
     delete this.roomReferees[referee.room];
+  }
+
+  getDump(req, res) {
+    this.db.getAllGames((err, data) => {
+      res.json(data);
+    });
   }
 };

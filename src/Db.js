@@ -19,4 +19,12 @@ module.exports = class Db {
       cb();
     });
   }
+
+  insertGame(game, cb) {
+    this.games.insertOne(game, cb);
+  }
+
+  getAllGames(cb) {
+    this.games.find({}).sort({startTime: -1}).toArray(cb);
+  }
 }

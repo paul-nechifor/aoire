@@ -8,7 +8,7 @@ module.exports = class AbstractReferee {
   joinGame(conn, msg) {
     const Player = this.getPlayerClass();
     const index = this.players.length;
-    const player = new Player(conn, index, this);
+    const player = new Player(conn, index, this, msg.userAgent);
     this.players.push(player);
     conn.player = player;
 
