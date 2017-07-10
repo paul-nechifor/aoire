@@ -1,0 +1,65 @@
+extends layout
+
+block content
+  .container: .row: .col-md-12
+    h1 Game
+
+    table.table.table-striped.table-bordered
+      tbody
+        tr
+          th Date
+          td= new Date(game.startTime)
+        tr
+          th Room
+          td= game.room
+        tr
+          th Games
+          td #{game.nGames} (#{game.draws} draws)
+        tr
+          th Black
+          td #{game.players[0]} (#{game.wins[0]} wins)
+        tr
+          th White
+          td #{game.players[1]} (#{game.wins[1]} wins)
+
+    .games
+      each play, index in game.gameEvents
+        .game.panel.panel-default(data-game-number=index)
+          .panel-heading Game
+          .panel-body
+            .svg-parent !{baseSvg}
+            .btn-group
+              button(type=button).btn.btn-default Prev
+              button(type=button).btn.btn-default Next
+
+block end
+  script window.game = !{JSON.stringify(game)};
+  script.
+    function renderInto(game, plays, playIndex) {
+      var $svg = game.find('svg');
+      var $pieces = $svg.find('#pieces').empty();
+      var $blackLabels = $svg.find('#black-labels').empty();
+      var $whiteLabels = $svg.find('#white-labels').empty();
+      var color = ['#Black01', '#White01'];
+      var lables = [$blackLabels, $whiteLabels];
+
+      plays.forEach(function (move, i) {
+        var el = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+        var x = (move[1] % 15) * 40;
+        var y = Math.floor(move[1] / 15) * 40;
+        var c = (i + playIndex) % 2;
+        el.setAttribute('transform', 'translate(' + x + ', ' + y + ')');
+        el.setAttributeNS('http://www.w3.org/1999/xlink', 'href', color[c]);
+        $pieces.append(el)
+
+        var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x);
+        text.setAttribute('y', y + 6);
+        text.appendChild(document.createTextNode(i + 1 + ''));
+        lables[c].append(text)
+      });
+    }
+
+    window.game.gameEvents.forEach(function (plays, i) {
+      renderInto($('[data-game-number=' + i + ']'), plays, i);
+    });

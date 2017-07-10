@@ -8,10 +8,11 @@ html(lang='en')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css')
     style: :stylus(compress=true)
-      h9
-        color #f00
+      .game .panel-body
+        text-align center
 
   body
     block content
     script(src='https://code.jquery.com/jquery-2.2.4.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    block end

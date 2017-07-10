@@ -1,4 +1,4 @@
-const {MongoClient} = require('mongodb');
+const {MongoClient, ObjectId} = require('mongodb');
 
 module.exports = class Db {
   constructor(mongoUrl) {
@@ -26,5 +26,9 @@ module.exports = class Db {
 
   getAllGames(cb) {
     this.games.find({}).sort({startTime: -1}).toArray(cb);
+  }
+
+  getGame(id, cb) {
+    this.games.findOne({_id: ObjectId(id)}, cb);
   }
 }

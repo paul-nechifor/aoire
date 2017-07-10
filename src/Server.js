@@ -1,6 +1,7 @@
 const Connection = require('./Connection');
 const Db = require('./Db');
 const _ = require('underscore');
+const fs = require('fs');
 const path = require('path');
 const pug = require('pug');
 
@@ -36,7 +37,20 @@ module.exports = class Server {
         if (err) {
           throw err;
         }
-        res.end(this.renderFile('games', {games: data}))
+        res.end(this.renderFile('games', {games: data}));
+      });
+    });
+    this.app.get('/game/:id', (req, res) => {
+      this.db.getGame(req.param('id'), (err, data) => {
+        if (err) {
+          throw err;
+        }
+        res.end(this.renderFile('game', {
+          game: data,
+          baseSvg: fs.readFileSync(
+            path.join(__dirname, 'base.svg'), {encoding: 'utf8'}
+          ),
+        }));
       });
     });
   }
