@@ -29,13 +29,15 @@ block content
           .panel-body
             .svg-parent !{baseSvg}
             .btn-group
-              button(type=button).btn.btn-default Prev
-              button(type=button).btn.btn-default Next
+              button(type=button).btn.btn-default.btn-start Start
+              button(type=button).btn.btn-default.btn-prev Prev
+              button(type=button).btn.btn-default.btn-next Next
+              button(type=button).btn.btn-default.btn-end End
 
 block end
   script window.game = !{JSON.stringify(game)};
   script.
-    function renderInto(game, plays, playIndex) {
+    function renderInto(game, plays, playIndex, toIndex) {
       var $svg = game.find('svg');
       var $pieces = $svg.find('#pieces').empty();
       var $blackLabels = $svg.find('#black-labels').empty();
@@ -43,7 +45,8 @@ block end
       var color = ['#Black01', '#White01'];
       var lables = [$blackLabels, $whiteLabels];
 
-      plays.forEach(function (move, i) {
+      for (var i = 0; i < toIndex; i++) {
+        var move = plays[i];
         var el = document.createElementNS('http://www.w3.org/2000/svg', 'use');
         var x = (move[1] % 15) * 40;
         var y = Math.floor(move[1] / 15) * 40;
@@ -57,9 +60,40 @@ block end
         text.setAttribute('y', y + 6);
         text.appendChild(document.createTextNode(i + 1 + ''));
         lables[c].append(text)
-      });
+      };
+
+      game.data('curr-index', toIndex);
     }
 
     window.game.gameEvents.forEach(function (plays, i) {
-      renderInto($('[data-game-number=' + i + ']'), plays, i);
+      renderInto($('[data-game-number=' + i + ']'), plays, i, plays.length);
+    });
+
+    $('.btn-start').click(function () {
+      var $game = $(this).parents('.game');
+      var i = parseInt($game.attr('data-game-number'), 10);
+      renderInto($game, window.game.gameEvents[i], i, 0);
+    });
+
+    $('.btn-end').click(function () {
+      var $game = $(this).parents('.game');
+      var i = parseInt($game.attr('data-game-number'), 10);
+      var play = window.game.gameEvents[i];
+      renderInto($game, play, i, play.length);
+    });
+
+    $('.btn-next').click(function () {
+      var $game = $(this).parents('.game');
+      var i = parseInt($game.attr('data-game-number'), 10);
+      var moveIndex = parseInt($game.data('curr-index'), 10);
+      var nextIndex = Math.min(moveIndex + 1, window.game.gameEvents[i].length);
+      renderInto($game, window.game.gameEvents[i], i, nextIndex);
+    });
+
+    $('.btn-prev').click(function () {
+      var $game = $(this).parents('.game');
+      var i = parseInt($game.attr('data-game-number'), 10);
+      var moveIndex = parseInt($game.data('curr-index'), 10);
+      var nextIndex = Math.max(moveIndex - 1, 0);
+      renderInto($game, window.game.gameEvents[i], i, nextIndex);
     });
