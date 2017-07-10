@@ -33,10 +33,10 @@ module.exports = class GomokuReferee extends AbstractReferee {
   }
 
   startGame() {
+    this.currentPlayer = (this.gamesPlayed % 2);
     this.gamesPlayed++;
     this.board = _.range(FULL_SIZE).map(() => MOVE_EMPTY);
-    this.currentPlayer = 0;
-    this.broadcast({type: 'Started'});
+    this.broadcast({type: 'Started', playerIndex: this.currentPlayer});
     this.setTimeout();
     this.eventRecords = [];
   }

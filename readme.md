@@ -64,8 +64,13 @@ Your index stays the same on subsequent games (but the first to move changes).
 
 ### Start of game
 
-You know a game as started when you receive `{"type": "Started"}`. This message
-has no parameters.
+You know a game as started when you receive
+
+```javascript
+{"type": "Started", "playerIndex": 1}
+```
+
+* `playerIndex`: Which player should move first (0 is black, 1 is white).
 
 If it's your turn you send a message like:
 
