@@ -88,7 +88,6 @@ When the server receives the move it sends it back to you and the other player.
 
 ## TODO
 
-- Hide Mongodb fromteh ouside world.
 - Stop printing the board for the server.
 - Auto restart server in case it fails.
 

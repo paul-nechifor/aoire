@@ -1,30 +1,21 @@
-version: '2'
+aoire:
+  build: .
+  command: ["nodemon", "/app/src/index.js"]
+  ports:
+    - 3000:3000
+  links:
+    - db:db
+  volumes:
+    - ./src:/app/src
 
-services:
-  aoire:
-    build: .
-    command: ["nodemon", "/app/src/index.js"]
-    ports:
-      - 3000:3000
-    depends_on:
-      - db
-    links:
-      - db:db
-    volumes:
-      - ./src:/app/src
+nginx:
+  build: ./nginx
+  links:
+    - aoire:aoire
+  ports:
+    - 80:80
 
-  nginx:
-    build: ./nginx
-    links:
-      - aoire:aoire
-    ports:
-        - 80:80
-    depends_on:
-      - aoire
-
-  db:
-    image: mongo:3.4
-    ports:
-      - 27017:27017
-    volumes:
-      - ./db:/data/db
+db:
+  image: mongo:3.4
+  volumes:
+    - ./db:/data/db
