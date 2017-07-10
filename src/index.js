@@ -4,11 +4,12 @@ const expressWs = require('express-ws');
 
 const app = express();
 const port = parseInt(process.env.port, 10);
+const mongoUrl = process.env.mongo_url || 'mongodb://db:27017/aoire';
 
 expressWs(app);
 
 app.get('/', (req, res) => {
-  res.send('Welcome to Aoire!!1');
+  res.send('See <a href="https://github.com/paul-nechifor/aoire">github.com/paul-nechifor/aoire</a>.');
 });
 
-new Server(app, port).start();
+new Server(app, port, mongoUrl).start();

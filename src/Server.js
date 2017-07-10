@@ -1,9 +1,11 @@
 const Connection = require('./Connection');
+const Db = require('./Db');
 const _ = require('underscore');
 
 module.exports = class Server {
-  constructor(app, port) {
+  constructor(app, port, mongoUrl) {
     this.app = app;
+    this.db = new Db(mongoUrl);
     this.port = port;
     _.bindAll(this, 'handleConnection');
     this.connections = {};
@@ -12,7 +14,12 @@ module.exports = class Server {
 
   start() {
     this.setupListeners();
-    this.listen();
+    this.db.connect(err => {
+      if (err) {
+        throw new Error(err);
+      }
+      this.listen();
+    });
   }
 
   setupListeners() {

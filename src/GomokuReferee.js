@@ -21,6 +21,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
       [MOVE_BLACK]: 0,
       [MOVE_WHITE]: 0,
     };
+    this.gameEvents = [];
     this.currentPlayer = -1;
     this.maxMoveTime = 5000;
     this.timeoutHandle = null;
@@ -99,17 +100,19 @@ module.exports = class GomokuReferee extends AbstractReferee {
 
   endCurrentGame() {
     this.clearTimeout();
+    this.gameEvents.push(this.eventRecords);
     if (this.gamesPlayed < this.nGames) {
       this.startGame();
     } else {
-      console.log({
+      console.log(JSON.stringify({
         wins: {
           [MOVE_BLACK]: this.wins[MOVE_BLACK],
           [MOVE_WHITE]: this.wins[MOVE_WHITE],
         },
         draws: this.wins[MOVE_WHITE],
         nGames: this.nGames,
-      });
+        gameEvents: this.gameEvents,
+      }));
       this.stopGame();
     }
   }
