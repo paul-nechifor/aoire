@@ -31,12 +31,24 @@ module.exports = class Server {
     this.app.ws('/game', this.handleConnection);
     this.app.get('/dump', this.getDump);
     this.app.get('/', this.renderTemplate('index'));
+    this.app.get('/games', (req, res) => {
+      this.db.getAllGames((err, data) => {
+        if (err) {
+          throw err;
+        }
+        res.end(this.renderFile('games', {games: data}))
+      });
+    });
   }
 
   renderTemplate(name) {
     return (req, res) => {
-      res.end(pug.renderFile(path.join(viewDir, name + '.pug'), {}));
+      res.end(this.renderFile(name));
     };
+  }
+
+  renderFile(name, options) {
+    return pug.renderFile(path.join(viewDir, name + '.pug'), options);
   }
 
   listen() {

@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  .container: .row: .col-md-12
+    h1 Games
+
+    table.table.table-striped.table-bordered
+      thead
+        tr
+          td Time
+          td Room
+          td Games
+          td Black
+          td White
+          td View
+      tbody
+        each game in games
+          tr
+            td= new Date(game.startTime)
+            td= game.room
+            td #{game.nGames} (#{game.draws} draws)
+            td #{game.players[0]} (#{game.wins[0]} wins)
+            td #{game.players[1]} (#{game.wins[1]} wins)
+            td: a(href='/game/' + game._id) See game.

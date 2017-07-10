@@ -107,12 +107,13 @@ module.exports = class GomokuReferee extends AbstractReferee {
     } else {
       this.server.db.insertGame({
         startTime: this.startTime,
+        room: this.room,
         wins: {
           [MOVE_BLACK]: this.wins[MOVE_BLACK],
           [MOVE_WHITE]: this.wins[MOVE_WHITE],
         },
         players: _.object(this.players.map(x => [x.index, x.userAgent])),
-        draws: this.wins[MOVE_WHITE],
+        draws: this.wins[MOVE_DRAW],
         nGames: this.nGames,
         gameEvents: this.gameEvents,
       });
