@@ -76,5 +76,12 @@ describe('GomokuReferee', () => {
       });
       referee.checkEnd().should.equal(0);
     });
+
+    it('should detect draws', () => {
+      _.range(15 * 15).forEach(x => {
+        return referee.board[x] = -5;
+      });
+      referee.checkEnd().should.equal(-2);
+    });
   });
 });

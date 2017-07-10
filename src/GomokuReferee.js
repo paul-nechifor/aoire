@@ -2,14 +2,13 @@ const _ = require('underscore');
 const AbstractReferee = require('./AbstractReferee');
 const GomokuPlayer = require('./GomokuPlayer');
 
+const MOVE_DRAW = -2;
 const MOVE_EMPTY = -1;
 const MOVE_BLACK = 0;
 const MOVE_WHITE = 1;
 const SIZE = 15;
 const IN_A_ROW = 5;
 const FULL_SIZE = SIZE * SIZE;
-
-// TODO Consider a draw.
 
 module.exports = class GomokuReferee extends AbstractReferee {
   constructor(server, room, nGames) {
@@ -18,7 +17,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
     this.gamesPlayed = 0;
     this.board = null;
     this.wins = {
-      [MOVE_EMPTY]: 0,
+      [MOVE_DRAW]: 0,
       [MOVE_BLACK]: 0,
       [MOVE_WHITE]: 0,
     };
@@ -104,7 +103,11 @@ module.exports = class GomokuReferee extends AbstractReferee {
       this.startGame();
     } else {
       console.log({
-        wins: this.wins,
+        wins: {
+          [MOVE_BLACK]: this.wins[MOVE_BLACK],
+          [MOVE_WHITE]: this.wins[MOVE_WHITE],
+        },
+        draws: this.wins[MOVE_WHITE],
         nGames: this.nGames,
       });
       this.stopGame();
@@ -113,10 +116,6 @@ module.exports = class GomokuReferee extends AbstractReferee {
 
   checkEnd() {
     const b = this.board;
-
-    if (_.every(b, x => x !== MOVE_EMPTY)) {
-      throw new Error('Draw, TODO deal with this.');
-    }
 
     let i, j, k;
     const end = SIZE - IN_A_ROW;
@@ -127,7 +126,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
       for (j = 0; j < end; j++) {
         // horiz
         expect = b[i * SIZE + j];
-        if (expect !== MOVE_EMPTY) {
+        if (expect >= MOVE_BLACK) {
           isMatch = true;
           for (k = 1; k < IN_A_ROW; k++) {
             if (b[i * SIZE + j + k] !== expect) {
@@ -142,7 +141,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
 
         // vert
         expect = b[j * SIZE + i];
-        if (expect !== MOVE_EMPTY) {
+        if (expect >= MOVE_BLACK) {
           isMatch = true;
           for (k = 1; k < IN_A_ROW; k++) {
             if (b[(j + k) * SIZE + i] !== expect) {
@@ -161,7 +160,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
       for (j = 0; j <= i; j++) {
         // diag 1 and below
         expect = b[i * SIZE + j];
-        if (expect !== MOVE_EMPTY) {
+        if (expect >= MOVE_BLACK) {
           isMatch = true;
           for (k = 1; k < IN_A_ROW; k++) {
             if (b[(k + i) * SIZE + j + k] !== expect) {
@@ -175,7 +174,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
         }
         // diag 2 and below
         expect = b[i * SIZE + (SIZE - j - 1)];
-        if (expect !== MOVE_EMPTY) {
+        if (expect >= MOVE_BLACK) {
           isMatch = true;
           for (k = 1; k < IN_A_ROW; k++) {
             if (b[(k + i) * SIZE + (SIZE - j - 1) - k] !== expect) {
@@ -194,7 +193,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
       for (j = 0; j <= i; j++) {
         // above diag 1
         expect = b[j * SIZE + i];
-        if (expect !== MOVE_EMPTY) {
+        if (expect >= MOVE_BLACK) {
           isMatch = true;
           for (k = 1; k < IN_A_ROW; k++) {
             if (b[(k + j) * SIZE + i + k] !== expect) {
@@ -209,7 +208,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
 
         // above diag 2
         expect = b[j * SIZE + (SIZE - i - 1)];
-        if (expect !== MOVE_EMPTY) {
+        if (expect >= MOVE_BLACK) {
           isMatch = true;
           for (k = 1; k < IN_A_ROW; k++) {
             if (b[(k + j) * SIZE + (SIZE - i - 1) - k] !== expect) {
@@ -222,6 +221,10 @@ module.exports = class GomokuReferee extends AbstractReferee {
           }
         }
       }
+    }
+
+    if (_.every(b, x => x !== MOVE_EMPTY)) {
+      return MOVE_DRAW;
     }
 
     return MOVE_EMPTY;
