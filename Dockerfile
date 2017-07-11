@@ -1,7 +1,7 @@
 FROM node:6
 
 RUN \
-  npm install nodemon@1.11.0 -g -q && \
+  npm install nodemon@1.11.0 forever@0.15.3 -g -q && \
   mkdir /app && \
   chown node:node /app
 

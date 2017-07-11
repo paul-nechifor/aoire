@@ -1,8 +1,8 @@
 aoire:
   build: .
-  command: ["nodemon", "/app/src/index.js"]
+  command: ["bash", "-c", "while true; do nodemon --exitcrash /app/src/index.js; sleep 1; done"]
   ports:
-    - 3000:3000
+    - 8443:3000
   links:
     - db:db
   volumes:
