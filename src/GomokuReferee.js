@@ -161,7 +161,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
       }
     }
 
-    for (i = 0; i < end; i++) {
+    for (i = 0; i <= end; i++) {
       for (j = 0; j <= i; j++) {
         // diag 1 and below
         expect = b[i * SIZE + j];
@@ -194,7 +194,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
       }
     }
 
-    for (i = 1; i < end; i++) {
+    for (i = 1; i <= end; i++) {
       for (j = 0; j <= i; j++) {
         // above diag 1
         expect = b[j * SIZE + i];
