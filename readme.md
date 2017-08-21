@@ -5,6 +5,12 @@ A server for playing games with bots.
 It’s prounounced /ˈeːɾʲɪ/ (like in p**ay** **r**ule k**i**t) or /ˈiːɾʲə/ (like
 in m**ea**n **r**ule sof**a**).
 
+## Bots so far:
+
+* [Greatlemer/react-gomoku-bot](https://github.com/Greatlemer/react-gomoku-bot)
+* [dprgarner/oapy](https://github.com/dprgarner/oapy)
+* [paul-nechifor/coaie](https://github.com/paul-nechifor/coaie)
+
 ## Usage
 
 Quick way to build and start everything in development mode:
