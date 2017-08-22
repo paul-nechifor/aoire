@@ -34,6 +34,7 @@ module.exports = class GomokuReferee extends AbstractReferee {
   }
 
   startGame() {
+    this.winner = MOVE_EMPTY;
     this.currentPlayer = (this.gamesPlayed % 2);
     this.gamesPlayed++;
     this.board = _.range(FULL_SIZE).map(() => MOVE_EMPTY);
@@ -77,24 +78,29 @@ module.exports = class GomokuReferee extends AbstractReferee {
 
     this.currentPlayer = (this.currentPlayer + 1) % 2;
 
-    const winner = this.checkEnd();
-    const msg = {type: 'PlayerMove', playerIndex, move};
-    if (winner !== MOVE_EMPTY) {
-      msg.winner = winner;
-      console.log('winner', winner);
+    if (this.winner === MOVE_EMPTY) {
+      this.winner = this.checkEnd();
     }
+
+    const msg = {type: 'PlayerMove', playerIndex, move};
+    if (this.winner !== MOVE_EMPTY) {
+      msg.winner = this.winner;
+      console.log(`winner: ${this.winner}`);
+      this.wins[this.winner]++;
+    }
+
+    // Must broadcast the final move before starting the next game.
     this.broadcast(msg);
 
-    if (winner !== MOVE_EMPTY) {
-      this.wins[winner]++;
+    if (this.winner !== MOVE_EMPTY) {
       this.endCurrentGame();
     }
   }
 
   disqualify(msg) {
     this.eventRecords.push([Date.now(), 'disqualify', msg]);
-    console.log('disqualified');
-    this.endCurrentGame();
+    console.log(`disqualified player ${this.currentPlayer}: ${msg}`);
+    this.winner = this.currentPlayer === MOVE_WHITE ? MOVE_BLACK : MOVE_WHITE;
   }
 
   endCurrentGame() {
