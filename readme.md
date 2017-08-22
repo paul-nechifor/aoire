@@ -8,8 +8,9 @@ in m**ea**n **r**ule sof**a**).
 ## Bots so far:
 
 * [Greatlemer/react-gomoku-bot](https://github.com/Greatlemer/react-gomoku-bot)
-* [dprgarner/oapy](https://github.com/dprgarner/oapy)
+* [dprgarner/balthazar](http://github.com/dprgarner/balthazar)
 * [paul-nechifor/coaie](https://github.com/paul-nechifor/coaie)
+* [dprgarner/oapy](https://github.com/dprgarner/oapy) (a bot skeleton)
 
 ## Usage
 
